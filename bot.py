@@ -26,8 +26,15 @@ def format_meaning(meaning):
 
 
 async def handle_message(message):
-    meaning = PyDictionary.meaning(message.content[5:])
-    reply = format_meaning(meaning)
+    word = message.content[5:]
+    try:
+        meaning = PyDictionary.meaning(word)
+        if meaning:
+            reply = format_meaning(meaning)
+        else:
+            reply = f'Sorry, {word} has no definition. :('
+    except:
+        reply = 'Sorry, an error occurred while fetching that definition.'
     await client.send_message(message.channel, reply)
 
 
