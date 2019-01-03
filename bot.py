@@ -26,7 +26,7 @@ def format_meaning(meaning):
 
 
 async def handle_message(message):
-    meaning = PyDictionary.meaning(message[5:])
+    meaning = PyDictionary.meaning(message.content[5:])
     reply = format_meaning(meaning)
     await client.send_message(message.channel, reply)
 
