@@ -1,5 +1,6 @@
 import asyncio
 import os
+from collections import defaultdict
 
 import discord
 
@@ -25,11 +26,16 @@ PARTS_OF_SPEECH = {
 
 def format_meaning(word, synsets):
     reply = f'**{word}**\n\n'
-    counter = 1
+
+    # Group by POS
+    grouped = defaultdict(list)
     for synset in synsets:
-        reply += f'*{PARTS_OF_SPEECH[synset.pos()]}*\n'
-        reply += f'    {counter}. {synset.definition()}\n'
-        counter += 1
+        grouped[PARTS_OF_SPEECH[synset.pos()]] += synset.definition()
+
+    for pos, definitions in grouped.items():
+        reply += f'*{pos}*\n'
+        for counter, definition in enumerate(definitions, 1):
+            reply += f'    {counter}. {definition}\n'
     return reply
 
 
