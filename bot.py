@@ -7,12 +7,12 @@ import discord
 from nltk.corpus import wordnet
 
 
-client = discord.Client()
+# client = discord.Client()
 
 
-@client.event
-async def on_ready():
-    print('Ready!')
+# @client.event
+# async def on_ready():
+#     print('Ready!')
 
 
 PARTS_OF_SPEECH = {
@@ -30,7 +30,7 @@ def format_meaning(word, synsets):
     # Group by POS
     grouped = defaultdict(list)
     for synset in synsets:
-        grouped[PARTS_OF_SPEECH[synset.pos()]] += synset.definition()
+        grouped[PARTS_OF_SPEECH[synset.pos()]].append(synset.definition())
 
     for pos, definitions in grouped.items():
         reply += f'*{pos}*\n'
@@ -52,10 +52,10 @@ async def handle_message(message):
     await client.send_message(message.channel, reply)
 
 
-@client.event
-async def on_message(message):
-    if message.content.startswith('/def '):
-        await handle_message(message)
+# @client.event
+# async def on_message(message):
+#     if message.content.startswith('/def '):
+#         await handle_message(message)
 
 
-client.run(os.environ.get('DISCORD_TOKEN'))
+# client.run(os.environ.get('DISCORD_TOKEN'))
