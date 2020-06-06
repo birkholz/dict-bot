@@ -3,7 +3,7 @@ import os
 
 import discord
 
-from PyDictionary import PyDictionary
+from nltk.corpus import wordnet
 
 
 client = discord.Client()
@@ -14,23 +14,31 @@ async def on_ready():
     print('Ready!')
 
 
-def format_meaning(word, meaning):
+PARTS_OF_SPEECH = {
+    wordnet.NOUN: "Noun",
+    wordnet.ADJ: "Adjective",
+    wordnet.VERB: "Verb",
+    wordnet.ADJ_SAT: "Adjective Satellite",
+    wordnet.ADV: "Adverb"
+}
+
+
+def format_meaning(word, synsets):
     reply = f'**{word}**\n\n'
-    for word_type, definitions in meaning.items():
-        reply += f'*{word_type}*\n'
-        counter = 1
-        for definition in definitions:
-            reply += f'    {counter}. {definition}\n'
-            counter += 1
+    counter = 1
+    for synset in synsets:
+        reply += f'*{PARTS_OF_SPEECH[synset.pos()]}*\n'
+        reply += f'    {counter}. {synset.definition()}\n'
+        counter += 1
     return reply
 
 
 async def handle_message(message):
     try:
         word = message.content[5:]
-        meaning = PyDictionary.meaning(word)
-        if meaning:
-            reply = format_meaning(word, meaning)
+        synsets = wordnet.synsets(word)
+        if synsets:
+            reply = format_meaning(word, synsets)
         else:
             reply = f'Sorry, {word} has no definition. :('
     except:
